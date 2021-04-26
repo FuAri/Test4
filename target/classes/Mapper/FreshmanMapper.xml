@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Mapper.FreshmanMapper">
+    <select id="findFreshman" parameterType="freshman" resultType="freshman">
+        select * from tb_freshman
+        <where>
+            <if test="ticketNumber != null and ticketNumber != ''">
+                and ticketnumber = #{ticketNumber}
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and id_card = #{idCard}
+            </if>
+            <if test="stuNo != null and stuNo != ''">
+                and stuno = #{stuNo}
+            </if>
+        </where>
+    </select>
+
+    <select id="findFreshman2" parameterType="freshman" resultType="freshman">
+        select * from tb_freshman
+        <where>
+            <choose>
+                <when test="ticketNumber != null and ticketNumber != ''">
+                    and ticketnumber = #{ticketNumber}
+                </when>
+                <when test="idCard != null and idCard != ''">
+                    and id_card = #{idCard}
+                </when>
+                <when test="stuNo != null and stuNo != ''">
+                    and stuno = #{stuNo}
+                </when>
+                <otherwise>
+                    status != 0
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <!--    根据系别列表，获取对应的新生注册信息列表：参数为系id数组-->
+    <select id="findFreshmanByDeptId1" parameterType="List" resultType="freshman">
+        select * from tb_freshman where dept_id in
+        <foreach collection="array" item="dept_id" index="index" open="(" separator="," close=")">
+            #{dept_id}
+        </foreach>
+    </select>
+
+    <!--    根据系别列表，获取对应的新生注册信息列表：参数为系id列表-->
+    <select id="findFreshmanByDeptId2" parameterType="List" resultType="freshman">
+        select * from tb_freshman where dept_id in
+        <foreach collection="list" item="dept_id" index="index" open="(" separator="," close=")">
+            #{dept_id}
+        </foreach>
+    </select>
+    <!--    根据专业列表，获取对应的新生注册信息列表：参数为专业id数组-->
+    <select id="findFreshmanByMajorId1" parameterType="List" resultType="freshman">
+        select * from tb_freshman where major_id in
+        <foreach collection="array" item="major_id" index="index" open="(" separator="," close=")">
+            #{major_id}
+        </foreach>
+    </select>
+    <!--    根据专业列表，获取对应的新生注册信息列表：参数为专业id列表-->
+    <select id="findFreshmanByMajorId2" parameterType="List" resultType="freshman">
+        select * from tb_freshman where major_id in
+        <foreach collection="list" item="major_id" index="index" open="(" separator="," close=")">
+            #{major_id}
+        </foreach>
+    </select>
+
+    <!--    查询计算机系、计算机科学与技术专业、已注册的新生列表信息，多参数:封装成Map入参-->
+    <select id="findFreshmanByMap" parameterType="List" resultType="freshman">
+        select * from tb_freshman where dept_id = #{deptId} and major_id in
+        <foreach collection="majorIds" item="major_id" index="index" open="(" separator="," close=")">
+            #{major_id}
+        </foreach>
+        and status = #{status}
+    </select>
+</mapper>
+
